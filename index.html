@@ -1,0 +1,1064 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+    <title>Birthday Surprise ✨</title>
+    
+    <!-- Fonts: Poppins for UI, Caveat for handwriting/romantic feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    
+    <!-- Tailwind CSS for layout and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti for the final surprise -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #00b4d8;
+        --secondary: #0077b6;
+        --bg-grad-1: #e0fbfc;
+        --bg-grad-2: #90e0ef;
+      }
+
+      * {
+        font-family: "Poppins", sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .handwriting {
+        font-family: "Caveat", cursive;
+      }
+
+      body {
+        background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2));
+        overflow: hidden;
+        height: 100vh;
+        height: 100dvh; /* Better mobile sizing */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Animated Responsive Background Blobs */
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.6;
+        animation: floatBlob 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: -1;
+      }
+
+      .blob-1 {
+        width: 50vw; height: 50vw; max-width: 500px; max-height: 500px;
+        background: #48cae4;
+        top: -10%; left: -10%;
+      }
+
+      .blob-2 {
+        width: 40vw; height: 40vw; max-width: 400px; max-height: 400px;
+        background: #ade8f4;
+        bottom: -10%; right: -10%;
+        animation-delay: -5s;
+      }
+
+      .blob-3 {
+        width: 30vw; height: 30vw; max-width: 300px; max-height: 300px;
+        background: #80ffdb;
+        top: 40%; left: 40%;
+        animation-delay: -10s;
+      }
+
+      @keyframes floatBlob {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(50px, 30px) scale(1.1); }
+        100% { transform: translate(-30px, -50px) scale(0.9); }
+      }
+
+      /* Floating Hearts */
+      .heart-particle {
+        position: absolute;
+        font-size: 20px;
+        color: var(--primary);
+        opacity: 0;
+        pointer-events: none;
+        animation: floatUp 6s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes floatUp {
+        0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+        20% { opacity: 0.6; }
+        80% { opacity: 0.6; }
+        100% { transform: translateY(-20vh) scale(1.2) rotate(360deg); opacity: 0; }
+      }
+
+      /* Glassmorphism Main Card */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+      }
+
+      /* Page Transitions */
+      .page-container {
+        position: relative;
+        perspective: 1000px;
+      }
+
+      .page {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(50px) scale(0.95);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .page.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0) scale(1);
+        z-index: 10;
+      }
+
+      .page.exit {
+        opacity: 0;
+        transform: translateX(-50px) scale(0.95);
+      }
+
+      /* Polaroid Gallery styling - Fully Responsive */
+      .polaroid {
+        background: transparent;
+        perspective: 1000px;
+        position: relative;
+        cursor: pointer;
+        z-index: 1;
+      }
+
+      .polaroid:hover {
+        z-index: 20;
+      }
+
+      .polaroid-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
+      }
+
+      .polaroid.flipped .polaroid-inner {
+        transform: rotateY(180deg) scale(1.1);
+      }
+
+      .polaroid-front, .polaroid-back {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        background: #fff;
+        padding: 8px 8px 30px 8px; /* Mobile padding */
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border-radius: 4px;
+      }
+      
+      @media (min-width: 640px) {
+        .polaroid-front, .polaroid-back {
+          padding: 12px 12px 40px 12px;
+        }
+      }
+
+      .polaroid-front::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-2deg);
+        width: 40px;
+        height: 18px;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        z-index: 2;
+      }
+
+      @media (min-width: 640px) {
+        .polaroid-front::before {
+          width: 60px; height: 25px;
+        }
+      }
+
+      .polaroid-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background: #f0f0f0;
+      }
+
+      .polaroid-back {
+        transform: rotateY(180deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        border: 1px solid #e0e0e0;
+      }
+
+      /* Premium Gift Box - Responsive */
+      .gift-box {
+        position: relative;
+        width: 130px;
+        height: 110px;
+        cursor: pointer;
+        transition: transform 0.3s;
+        margin: 0 auto;
+      }
+
+      @media (min-width: 640px) {
+        .gift-box { width: 180px; height: 160px; }
+      }
+
+      .gift-box:hover {
+        animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+      }
+
+      .gift-bottom {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 75%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 8px;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.15);
+      }
+      
+      .gift-bottom::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 100%;
+        background: rgba(255,255,255,0.8);
+      }
+
+      @media (min-width: 640px) {
+        .gift-bottom::after { width: 30px; }
+      }
+
+      .gift-lid {
+        position: absolute;
+        top: 10px;
+        left: -5%;
+        width: 110%;
+        height: 25%;
+        background: linear-gradient(135deg, var(--secondary), var(--primary));
+        border-radius: 6px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        z-index: 2;
+        transition: transform 0.5s ease-in-out;
+      }
+
+      .gift-lid::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 100%;
+        background: rgba(255,255,255,0.9);
+      }
+      
+      @media (min-width: 640px) {
+        .gift-lid::after { width: 30px; }
+      }
+
+      .gift-bow {
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 35px;
+        z-index: 3;
+        transition: transform 0.5s ease;
+      }
+      
+      @media (min-width: 640px) {
+        .gift-bow { top: -30px; font-size: 50px; }
+      }
+
+      .gift-box.open .gift-lid {
+        transform: translateY(-40px) rotate(10deg);
+        opacity: 0;
+      }
+      .gift-box.open .gift-bow {
+        transform: translate(-50%, -40px) scale(0);
+        opacity: 0;
+      }
+
+      @keyframes shake {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
+      }
+
+      /* Upgraded 3D-ish Cake - Responsive */
+      .cake-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+        filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.1));
+      }
+
+      .tier-top {
+        width: 100px; height: 50px;
+        background: linear-gradient(to right, #fdf0d5 0%, #f9e2b1 50%, #fdf0d5 100%);
+        border-radius: 8px 8px 0 0;
+        position: relative;
+        z-index: 3;
+      }
+      @media (min-width: 640px) { .tier-top { width: 130px; height: 60px; } }
+
+      /* Cake Piping / Border */
+      .tier-top::before {
+        content: '';
+        position: absolute;
+        bottom: -6px; left: -4px; right: -4px;
+        height: 12px;
+        background: linear-gradient(to right, #48cae4, #00b4d8, #48cae4);
+        border-radius: 10px;
+        z-index: 4;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      
+      .tier-bottom {
+        width: 140px; height: 65px;
+        background: linear-gradient(to right, #fdf0d5 0%, #f9e2b1 50%, #fdf0d5 100%);
+        border-radius: 8px 8px 6px 6px;
+        position: relative;
+        z-index: 2;
+      }
+      @media (min-width: 640px) { .tier-bottom { width: 190px; height: 85px; } }
+
+      /* Decorative Icing Drips */
+      .icing {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 20px;
+        background: #fff;
+        border-radius: 8px 8px 25px 25px;
+        z-index: 5;
+      }
+      @media (min-width: 640px) { .icing { height: 25px; } }
+
+      .icing::after {
+        content: '';
+        position: absolute;
+        top: 15px; left: 20%; width: 12px; height: 18px;
+        background: #fff;
+        border-radius: 0 0 10px 10px;
+      }
+
+      .icing::before {
+        content: '';
+        position: absolute;
+        top: 15px; right: 25%; width: 10px; height: 15px;
+        background: #fff;
+        border-radius: 0 0 10px 10px;
+      }
+
+      .candle {
+        width: 12px; height: 35px;
+        background: repeating-linear-gradient(45deg, #fff, #fff 5px, #48cae4 5px, #48cae4 10px);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 4px;
+        box-shadow: inset -2px 0 4px rgba(0,0,0,0.1);
+      }
+      @media (min-width: 640px) { .candle { width: 14px; height: 45px; } }
+
+      .flame {
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 14px;
+        height: 20px;
+        background: #ffca28;
+        border-radius: 50% 50% 20% 20%;
+        box-shadow: 0 0 15px #ffca28, 0 0 30px #ffca28;
+        animation: flicker 0.5s infinite alternate;
+        cursor: pointer;
+        transition: opacity 0.3s;
+      }
+      @media (min-width: 640px) { .flame { top: -22px; width: 16px; height: 24px; } }
+
+      @keyframes flicker {
+        0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+        100% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+      }
+
+      .flame:hover {
+        opacity: 0.8;
+      }
+
+      .flame.blown-out {
+        animation: extinguish 0.5s forwards;
+        pointer-events: none;
+      }
+
+      @keyframes extinguish {
+        0% { transform: translateX(-50%) scale(1); opacity: 1; }
+        50% { transform: translateX(-50%) translateY(-10px) scale(0.5); opacity: 0.5; background: #555; box-shadow: none; }
+        100% { transform: translateX(-50%) translateY(-20px) scale(0); opacity: 0; background: transparent; box-shadow: none; }
+      }
+
+      /* Cake Decorations & Plaque */
+      .tier-top-text {
+        position: absolute;
+        bottom: 6px;
+        width: 100%;
+        text-align: center;
+        font-family: 'Caveat', cursive;
+        font-size: 24px;
+        font-weight: bold;
+        color: #0077b6;
+        z-index: 6;
+      }
+      @media (min-width: 640px) { .tier-top-text { font-size: 32px; bottom: 8px; } }
+
+      .cake-plaque {
+        position: absolute;
+        top: 55%; left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 4px 14px;
+        border: 2px solid #48cae4;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        z-index: 6;
+      }
+      @media (min-width: 640px) { .cake-plaque { padding: 6px 18px; } }
+
+      .cake-plaque .name {
+        font-family: 'Caveat', cursive;
+        font-size: 20px;
+        font-weight: bold;
+        color: #0077b6;
+        line-height: 1.1;
+      }
+      @media (min-width: 640px) { .cake-plaque .name { font-size: 26px; } }
+
+      .cake-plaque .date {
+        font-family: 'Poppins', sans-serif;
+        font-size: 8px;
+        font-weight: 600;
+        color: #00b4d8;
+        letter-spacing: 0.5px;
+      }
+      @media (min-width: 640px) { .cake-plaque .date { font-size: 10px; } }
+
+      /* --- NEW NATURAL FLOW STYLES FOR FINAL SURPRISE --- */
+      
+      #wish-instruction {
+        transition: all 0.5s ease-out;
+        width: 100%;
+      }
+
+      .hidden-surprise {
+        display: none;
+        opacity: 0;
+        transform: translateY(30px);
+        width: 100%;
+        max-width: 600px;
+        z-index: 10;
+      }
+
+      .hidden-surprise.revealed {
+        display: block;
+        animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* New beautiful Glass Card style for the final message */
+      .message-card {
+        background: rgba(255, 255, 255, 0.45);
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 20px;
+        padding: 1.5rem 1rem;
+        box-shadow: 0 15px 35px rgba(0, 180, 216, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+        position: relative;
+        overflow: hidden;
+      }
+      @media (min-width: 640px) { .message-card { padding: 2.5rem 2rem; border-radius: 30px; } }
+
+      /* Subtle shine animation on the message card */
+      .message-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+        transform: skewX(-20deg);
+        animation: shine 4s infinite;
+      }
+
+      @keyframes shine {
+        0% { left: -100%; }
+        20% { left: 200%; }
+        100% { left: 200%; }
+      }
+
+      /* Timer Styles - Responsive */
+      .timer-box {
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        width: 55px;
+        height: 55px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      }
+      @media (min-width: 640px) { .timer-box { width: 70px; height: 70px; border-radius: 16px; } }
+      @media (min-width: 768px) { .timer-box { width: 90px; height: 90px; } }
+
+      /* Button Styles */
+      .nav-btn {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        color: var(--secondary);
+        transition: all 0.3s;
+      }
+      .nav-btn:hover {
+        background: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+
+      /* --- LOVE POPUP STYLES --- */
+      #love-popup {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      #love-popup.show {
+        opacity: 1;
+        pointer-events: auto;
+        cursor: pointer;
+      }
+      .love-text {
+        font-family: 'Caveat', cursive;
+        font-size: 50px;
+        color: #ff4d6d;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px 40px;
+        border-radius: 50px;
+        box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+        transform: scale(0.5);
+        transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-align: center;
+        border: 2px solid #ffccd5;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      @media (min-width: 640px) {
+        .love-text { font-size: 70px; padding: 30px 60px; }
+      }
+      #love-popup.show .love-text {
+        transform: scale(1);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div id="hearts-container"></div>
+
+    <!-- Main Card - Optimized Padding for Mobile -->
+    <main class="glass-card w-[92%] max-w-[1000px] h-[85vh] min-h-[550px] max-h-[800px] rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-8 md:p-12 flex flex-col">
+      
+      <div class="page-container flex-1 w-full h-full" id="page-container">
+        
+        <!-- Page 1: Hero / Gift -->
+        <section class="page active">
+          <div class="text-center mb-10 sm:mb-12">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-cyan-600 tracking-tight mb-4 leading-tight">
+              I have a surprise <br/> for you...
+            </h1>
+            <p class="text-base sm:text-lg md:text-xl text-gray-600 font-medium">
+              Tap the gift to open it ✨
+            </p>
+          </div>
+
+          <div class="gift-box" onclick="openGift()">
+            <div class="gift-bow">🎀</div>
+            <div class="gift-lid"></div>
+            <div class="gift-bottom"></div>
+          </div>
+        </section>
+
+        <!-- Page 2: Gallery 1 -->
+        <section class="page">
+          <div class="text-center mb-6 sm:mb-8 w-full">
+            <h2 class="handwriting text-3xl sm:text-4xl md:text-5xl text-cyan-600 mb-2">So Effortlessly Beautiful</h2>
+            <p class="text-xs sm:text-sm md:text-base text-cyan-500 font-medium animate-pulse">Tap the photos to reveal a secret! 🤫</p>
+          </div>
+          
+          <!-- Made Polaroids side-by-side on mobile via flex-row -->
+          <div class="flex flex-row justify-center items-center gap-4 sm:gap-8 md:gap-16 mb-8 w-full">
+            <div class="polaroid w-36 h-48 sm:w-48 sm:h-64 md:w-56 md:h-72 -rotate-6" style="z-index: 2;" onclick="this.classList.toggle('flipped')">
+              <div class="polaroid-inner">
+                <div class="polaroid-front">
+                  <img src="1.jpg" onerror="this.src='https://picsum.photos/seed/nin1/400/500'" alt="Memory 1" />
+                </div>
+                <div class="polaroid-back handwriting text-lg sm:text-xl md:text-2xl text-cyan-700">
+                  <p>You looked so amazing here! ✨</p>
+                </div>
+              </div>
+            </div>
+            <div class="polaroid w-36 h-48 sm:w-48 sm:h-64 md:w-56 md:h-72 rotate-6" style="z-index: 1;" onclick="this.classList.toggle('flipped')">
+              <div class="polaroid-inner">
+                <div class="polaroid-front">
+                  <img src="2.jpg" onerror="this.src='https://picsum.photos/seed/nin2/400/500'" alt="Memory 2" />
+                </div>
+                <div class="polaroid-back handwriting text-lg sm:text-xl md:text-2xl text-cyan-700">
+                  <p>I can't get enough of this look. 💙</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 sm:gap-6 mt-auto pb-2 sm:pb-4">
+            <button onclick="prev()" class="nav-btn w-12 h-12 sm:w-14 sm:h-14 rounded-full flex justify-center items-center text-xl sm:text-2xl shadow-sm">←</button>
+            <button onclick="next()" class="nav-btn w-12 h-12 sm:w-14 sm:h-14 rounded-full flex justify-center items-center text-xl sm:text-2xl shadow-sm">→</button>
+          </div>
+        </section>
+
+        <!-- Page 3: Gallery 2 -->
+        <section class="page">
+          <div class="text-center mb-6 sm:mb-8 w-full">
+            <h2 class="handwriting text-3xl sm:text-4xl md:text-5xl text-cyan-600 mb-2">That gorgeous smile</h2>
+          </div>
+          
+          <div class="flex flex-row justify-center items-center gap-4 sm:gap-8 md:gap-16 mb-8 w-full">
+            <div class="polaroid w-36 h-48 sm:w-48 sm:h-64 md:w-56 md:h-72 rotate-3" onclick="this.classList.toggle('flipped')">
+              <div class="polaroid-inner">
+                <div class="polaroid-front">
+                  <img src="3.jpg" onerror="this.src='https://picsum.photos/seed/nin3/400/500'" alt="Memory 3" />
+                </div>
+                <div class="polaroid-back handwriting text-lg sm:text-xl md:text-2xl text-cyan-700">
+                  <p>This smile melts my heart! 🥰</p>
+                </div>
+              </div>
+            </div>
+            <div class="polaroid w-36 h-48 sm:w-48 sm:h-64 md:w-56 md:h-72 -rotate-3 mt-4" onclick="this.classList.toggle('flipped')">
+              <div class="polaroid-inner">
+                <div class="polaroid-front">
+                  <img src="4.jpg" onerror="this.src='https://picsum.photos/seed/nin4/400/500'" alt="Memory 4" />
+                </div>
+                <div class="polaroid-back handwriting text-lg sm:text-xl md:text-2xl text-cyan-700">
+                  <p>Absolutely stunning, inside and out. 🌟</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 sm:gap-6 mt-auto pb-2 sm:pb-4">
+            <button onclick="prev()" class="nav-btn w-12 h-12 sm:w-14 sm:h-14 rounded-full flex justify-center items-center text-xl sm:text-2xl shadow-sm">←</button>
+            <button onclick="next()" class="nav-btn w-12 h-12 sm:w-14 sm:h-14 rounded-full flex justify-center items-center text-xl sm:text-2xl shadow-sm">→</button>
+          </div>
+        </section>
+
+        <!-- Page 4: Gallery 3 -->
+        <section class="page">
+          <div class="text-center mb-6 sm:mb-8 w-full">
+            <h2 class="handwriting text-3xl sm:text-4xl md:text-5xl text-cyan-600 mb-2">My favorite person</h2>
+          </div>
+          
+          <div class="flex flex-row justify-center items-center gap-4 sm:gap-8 md:gap-16 mb-8 w-full">
+            <div class="polaroid w-36 h-48 sm:w-48 sm:h-64 md:w-56 md:h-72 -rotate-6 mt-4" onclick="this.classList.toggle('flipped')">
+              <div class="polaroid-inner">
+                <div class="polaroid-front">
+                  <img src="5.jpg" onerror="this.src='https://picsum.photos/seed/nin5/400/500'" alt="Memory 5" />
+                </div>
+                <div class="polaroid-back handwriting text-lg sm:text-xl md:text-2xl text-cyan-700">
+                  <p>Every picture of you is a masterpiece! 📸</p>
+                </div>
+              </div>
+            </div>
+            <div class="polaroid w-36 h-48 sm:w-48 sm:h-64 md:w-56 md:h-72 rotate-12" onclick="this.classList.toggle('flipped')">
+              <div class="polaroid-inner">
+                <div class="polaroid-front">
+                  <img src="6.jpg" onerror="this.src='https://picsum.photos/seed/nin6/400/500'" alt="Memory 6" />
+                </div>
+                <div class="polaroid-back handwriting text-lg sm:text-xl md:text-2xl text-cyan-700">
+                  <p>The most beautiful girl in the world. 💖</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 sm:gap-6 mt-auto pb-2 sm:pb-4">
+            <button onclick="prev()" class="nav-btn w-12 h-12 sm:w-14 sm:h-14 rounded-full flex justify-center items-center text-xl sm:text-2xl shadow-sm">←</button>
+            <button onclick="next()" class="nav-btn px-6 sm:px-8 h-12 sm:h-14 rounded-full flex justify-center items-center text-lg sm:text-xl font-medium shadow-sm gap-2">
+              Next <span class="text-xl sm:text-2xl">💌</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Page 5: Been Together Counter -->
+        <section class="page">
+          <h2 class="handwriting text-3xl sm:text-4xl md:text-5xl text-cyan-600 mb-6 sm:mb-8 text-center px-2">Every second with you...</h2>
+          
+          <div class="flex justify-center items-center gap-1 sm:gap-3 md:gap-6 mb-6 sm:mb-10 w-full px-1">
+            <div class="timer-box">
+                <span id="t-days" class="text-xl sm:text-2xl md:text-4xl font-bold text-cyan-600">0</span>
+                <span class="text-[10px] sm:text-xs md:text-sm text-cyan-500 font-medium uppercase tracking-wider">Days</span>
+            </div>
+            <div class="text-lg sm:text-xl md:text-2xl text-cyan-400 font-bold mb-4 sm:mb-6">:</div>
+            <div class="timer-box">
+                <span id="t-hours" class="text-xl sm:text-2xl md:text-4xl font-bold text-cyan-600">00</span>
+                <span class="text-[10px] sm:text-xs md:text-sm text-cyan-500 font-medium uppercase tracking-wider">Hrs</span>
+            </div>
+            <div class="text-lg sm:text-xl md:text-2xl text-cyan-400 font-bold mb-4 sm:mb-6">:</div>
+            <div class="timer-box">
+                <span id="t-mins" class="text-xl sm:text-2xl md:text-4xl font-bold text-cyan-600">00</span>
+                <span class="text-[10px] sm:text-xs md:text-sm text-cyan-500 font-medium uppercase tracking-wider">Min</span>
+            </div>
+            <div class="text-lg sm:text-xl md:text-2xl text-cyan-400 font-bold mb-4 sm:mb-6">:</div>
+            <div class="timer-box">
+                <span id="t-secs" class="text-xl sm:text-2xl md:text-4xl font-bold text-cyan-600">00</span>
+                <span class="text-[10px] sm:text-xs md:text-sm text-cyan-500 font-medium uppercase tracking-wider">Sec</span>
+            </div>
+          </div>
+
+          <p class="handwriting text-2xl sm:text-3xl md:text-4xl text-cyan-500 text-center mb-8">...is a dream come true ✨</p>
+
+          <div class="flex gap-4 sm:gap-6 mt-auto pb-2 sm:pb-4">
+            <button onclick="prev()" class="nav-btn w-12 h-12 sm:w-14 sm:h-14 rounded-full flex justify-center items-center text-xl sm:text-2xl shadow-sm">←</button>
+            <button onclick="next()" class="nav-btn px-6 sm:px-8 h-12 sm:h-14 rounded-full flex justify-center items-center text-lg sm:text-xl font-medium shadow-sm gap-2">
+              Next <span class="text-xl sm:text-2xl">💌</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Page 6: Final / Cake -->
+        <section class="page w-full h-full flex flex-col justify-center items-center">
+          
+          <!-- Upgraded 3D Cake -->
+          <div class="cake-container">
+            <div class="tier-top">
+              <div class="icing"></div>
+              <div class="candle">
+                <!-- User must tap this to continue -->
+                <div class="flame" onclick="blowOutCandle()" title="Tap to blow out!"></div>
+              </div>
+              <div class="tier-top-text">23</div>
+            </div>
+            <div class="tier-bottom">
+              <div class="icing"></div>
+              <!-- New Elegant Cake Plaque with Date -->
+              <div class="cake-plaque">
+                <span class="name">Nin</span>
+                <span class="date">26/05/2026</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- INITIAL INSTRUCTION: Flows below cake -->
+          <div id="wish-instruction" class="text-center mt-2">
+            <h2 class="handwriting text-3xl sm:text-4xl md:text-5xl text-cyan-600 font-bold mb-2 sm:mb-4">Make a wish! 🎂</h2>
+            <p class="text-sm sm:text-lg md:text-xl text-gray-500 font-medium animate-pulse">Tap the candle to blow it out...</p>
+          </div>
+
+          <!-- FINAL TEXT SURPRISE: Replaces instruction, inside a beautiful Glass Card -->
+          <div id="final-surprise" class="hidden-surprise w-[95%] sm:w-full">
+            <div class="message-card text-center mx-auto">
+              <h1 class="handwriting text-5xl sm:text-6xl md:text-7xl text-cyan-600 font-bold drop-shadow-sm mb-3 sm:mb-4">
+                Happy Birthday!
+              </h1>
+              <p class="text-xs sm:text-sm md:text-base text-gray-700 leading-relaxed mb-6 sm:mb-8">
+                Wishing you a day filled with happiness, love, and all your favorite things. You deserve the absolute best today and always! 💖
+              </p>
+              <div class="flex flex-row justify-center gap-2 sm:gap-4">
+                <!-- Swapped this to call the new triggerCelebration function -->
+                <button onclick="triggerCelebration()" class="nav-btn px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base font-medium shadow-sm">
+                  Confetti 🎉
+                </button>
+                <button onclick="resetSurprise()" class="nav-btn px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base font-medium shadow-sm">
+                  Restart ↺
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </main>
+
+    <!-- I Love You Popup -->
+    <div id="love-popup" onclick="this.classList.remove('show')">
+      <div class="love-text">
+        I love you ❤️
+      </div>
+    </div>
+
+    <script>
+      // Generate drifting heart particles in the background
+      const heartsContainer = document.getElementById('hearts-container');
+      const heartSymbols = ['💙', '✨', '🫧', '💎'];
+      
+      // Responsive amount of background particles
+      const particleCount = window.innerWidth < 640 ? 15 : 30;
+      for (let i = 0; i < particleCount; i++) {
+        let h = document.createElement("div");
+        h.className = "heart-particle";
+        // Pick a random symbol
+        h.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        h.style.left = Math.random() * 100 + "vw";
+        // Randomize speed and delay
+        h.style.animationDuration = (Math.random() * 10 + 5) + "s";
+        h.style.animationDelay = (Math.random() * 5) + "s";
+        heartsContainer.appendChild(h);
+      }
+
+      // Timer Logic
+      const startDate = new Date('2026-03-22T00:00:00');
+      
+      function updateTimer() {
+        const now = new Date();
+        const diff = Math.max(0, now - startDate); // Prevent negative if current date is before start
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const mins = Math.floor((diff / 1000 / 60) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+        
+        const elDays = document.getElementById('t-days');
+        if (elDays) {
+          elDays.innerText = days;
+          document.getElementById('t-hours').innerText = hours.toString().padStart(2, '0');
+          document.getElementById('t-mins').innerText = mins.toString().padStart(2, '0');
+          document.getElementById('t-secs').innerText = secs.toString().padStart(2, '0');
+        }
+      }
+      
+      setInterval(updateTimer, 1000);
+      updateTimer(); // Initial call
+
+      // State Management
+      let current = 0;
+      const pages = document.querySelectorAll(".page");
+      let isAnimating = false;
+
+      function updatePages(oldIndex, newIndex) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const oldPage = pages[oldIndex];
+        const newPage = pages[newIndex];
+
+        // Slide old out
+        oldPage.classList.remove('active');
+        oldPage.classList.add('exit');
+
+        // Prepare new page
+        newPage.classList.remove('exit');
+        
+        // Timeout to allow display of animation smoothly
+        setTimeout(() => {
+          newPage.classList.add('active');
+          
+          setTimeout(() => {
+            isAnimating = false;
+          }, 800); // Matches CSS transition duration
+        }, 100);
+      }
+
+      function blowOutCandle() {
+        const flame = document.querySelector('.flame');
+        if (flame.classList.contains('blown-out')) return; // Prevent double trigger
+
+        // 1. Blow out animation
+        flame.classList.add('blown-out');
+        
+        // 2. Hide the instruction text smoothly
+        const instruction = document.getElementById('wish-instruction');
+        instruction.style.opacity = '0';
+        instruction.style.transform = 'translateY(-20px)';
+
+        // 3. Trigger the big surprise after fade out
+        setTimeout(() => {
+          // completely remove from document flow
+          instruction.style.display = 'none';
+          
+          // Reveal the final message card (triggers display: block and fadeInUp)
+          document.getElementById('final-surprise').classList.add('revealed');
+          
+          // Cannon burst effect!
+          fireConfetti();
+          let burstCount = 0;
+          const burstInterval = setInterval(() => {
+            fireConfetti();
+            burstCount++;
+            if(burstCount >= 3) {
+              clearInterval(burstInterval);
+              // Trigger the "I love you" popup after the final initial burst finishes falling
+              setTimeout(showLovePopup, 3200);
+            }
+          }, 700);
+
+        }, 500);
+      }
+
+      // Shows the Love Popup
+      function showLovePopup() {
+        const popup = document.getElementById('love-popup');
+        popup.classList.add('show');
+        // Auto dismiss after 4 seconds
+        setTimeout(() => {
+          popup.classList.remove('show');
+        }, 4000);
+      }
+
+      // Replaces the basic fireConfetti click with a sequenced celebration
+      function triggerCelebration() {
+        fireConfetti();
+        // Wait 3 seconds for confetti to mostly finish falling, then show popup
+        setTimeout(showLovePopup, 3000); 
+      }
+
+      function next() {
+        if (current < pages.length - 1) {
+          let old = current;
+          current++;
+          updatePages(old, current);
+        }
+      }
+
+      function prev() {
+        if (current > 0) {
+          let old = current;
+          current--;
+          updatePages(old, current);
+        }
+      }
+
+      function openGift() {
+        const gift = document.querySelector('.gift-box');
+        if(gift.classList.contains('open')) return;
+
+        gift.classList.add('open');
+        
+        setTimeout(() => {
+          next();
+        }, 800);
+      }
+
+      function resetSurprise() {
+        let old = current;
+        current = 0;
+        
+        // Hide popup if it's currently showing
+        document.getElementById('love-popup').classList.remove('show');
+
+        // Reset the gift box
+        document.querySelector('.gift-box').classList.remove('open');
+        
+        // Reset Polaroids
+        document.querySelectorAll('.polaroid.flipped').forEach(p => p.classList.remove('flipped'));
+
+        // Reset Candle & text displays
+        document.querySelector('.flame').classList.remove('blown-out');
+        
+        const instruction = document.getElementById('wish-instruction');
+        instruction.style.display = 'block';
+        
+        // Slight delay so display block renders before transitioning opacity
+        setTimeout(() => {
+          instruction.style.opacity = '1';
+          instruction.style.transform = 'translateY(0)';
+        }, 50);
+        
+        document.getElementById('final-surprise').classList.remove('revealed');
+        
+        // Reset pages rapidly
+        pages.forEach(p => {
+          p.classList.remove('active', 'exit');
+        });
+        
+        pages[0].classList.add('active');
+      }
+
+      // Awesome Confetti Cannon Effect
+      function fireConfetti() {
+        const duration = 3000;
+        const end = Date.now() + duration;
+
+        (function frame() {
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#00b4d8', '#0077b6', '#ffffff', '#ffca28']
+          });
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#00b4d8', '#0077b6', '#ffffff', '#ffca28']
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+      }
+    </script>
+  </body>
+</html>

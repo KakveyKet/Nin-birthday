@@ -135,20 +135,19 @@
         transform: translateX(-50px) scale(0.95);
       }
 
-      /* Polaroid Gallery styling - Fully Responsive & Made Bigger */
+      /* Polaroid Gallery styling - Fully Responsive */
       .polaroid {
         background: transparent;
         perspective: 1000px;
         position: relative;
         cursor: pointer;
         z-index: 1;
-        /* Base sizes slightly bumped up */
-        width: 135px; height: 175px; 
+        width: 120px; height: 160px; /* Small mobile default */
       }
       
-      @media (min-width: 380px) { .polaroid { width: 160px; height: 210px; } }
-      @media (min-width: 640px) { .polaroid { width: 220px; height: 280px; } }
-      @media (min-width: 768px) { .polaroid { width: 260px; height: 320px; } }
+      @media (min-width: 380px) { .polaroid { width: 140px; height: 180px; } }
+      @media (min-width: 640px) { .polaroid { width: 200px; height: 260px; } }
+      @media (min-width: 768px) { .polaroid { width: 240px; height: 300px; } }
 
       .polaroid:hover {
         z-index: 20;
@@ -663,28 +662,27 @@
         <section class="page">
           <div class="text-center mb-4 min-[380px]:mb-6 sm:mb-8 w-full">
             <h2 class="handwriting text-2xl min-[380px]:text-3xl sm:text-4xl md:text-5xl text-cyan-600 mb-1 min-[380px]:mb-2">So Effortlessly Beautiful</h2>
-            <p class="text-[10px] min-[380px]:text-xs sm:text-sm md:text-base text-cyan-500 font-medium animate-pulse">Tap the photos to reveal a secret! 🤫</p>
+            <p class="text-[10px] min-[380px]:text-xs sm:text-sm md:text-base text-cyan-500 font-medium animate-pulse">Tap the photos to reveal a secret! </p>
           </div>
           
           <div class="flex flex-row justify-center items-center gap-2 min-[380px]:gap-4 sm:gap-8 md:gap-16 mb-4 min-[380px]:mb-8 w-full">
-            <!-- Removed the inline w- and h- classes to allow the new CSS to fully take over sizing! -->
             <div class="polaroid -rotate-6" style="z-index: 2;" onclick="this.classList.toggle('flipped')">
               <div class="polaroid-inner">
                 <div class="polaroid-front">
-                  <img src="https://res.cloudinary.com/dvljcimlz/image/upload/v1779632681/photo_2026-05-24_21-24-31_bzlaa5.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779632681/photo_2026-05-24_21-24-31_bzlaa5.jpg'" alt="Memory 1" />
+                  <img src="1.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779632681/photo_2026-05-24_21-24-31_bzlaa5.jpg'" alt="Memory 1" />
                 </div>
                 <div class="polaroid-back handwriting text-base min-[380px]:text-lg sm:text-xl md:text-2xl text-cyan-700">
-                   <p>Flower for you ! ✨</p>
+                  <p>Flower for you ! ✨</p>
                 </div>
               </div>
             </div>
             <div class="polaroid rotate-6" style="z-index: 1;" onclick="this.classList.toggle('flipped')">
               <div class="polaroid-inner">
                 <div class="polaroid-front">
-                  <img src="https://res.cloudinary.com/dvljcimlz/image/upload/v1779193115/photo_2026-05-19_19-18-10_qcetj1.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779193115/photo_2026-05-19_19-18-10_qcetj1.jpg'" alt="Memory 2" />
+                  <img src="2.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779193115/photo_2026-05-19_19-18-10_qcetj1.jpg'" alt="Memory 2" />
                 </div>
                 <div class="polaroid-back handwriting text-base min-[380px]:text-lg sm:text-xl md:text-2xl text-cyan-700">
-                <p>A cute bracelet just for you. 💙</p>
+                  <p>A cute bracelet just for you. 💙</p>
                 </div>
               </div>
             </div>
@@ -719,7 +717,7 @@
                   <img src="4.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779193111/photo_2026-05-19_19-18-14_mmh46v.jpg'" alt="Memory 4" />
                 </div>
                 <div class="polaroid-back handwriting text-base min-[380px]:text-lg sm:text-xl md:text-2xl text-cyan-700">
-                  <p>Absolutely stunning, inside and out. ☀️</p>
+                  <p>Absolutely stunning, inside and out. 🌟</p>
                 </div>
               </div>
             </div>
@@ -741,7 +739,7 @@
             <div class="polaroid -rotate-6 mt-4" onclick="this.classList.toggle('flipped')">
               <div class="polaroid-inner">
                 <div class="polaroid-front">
-                  <img src="5.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779193115/photo_2026-05-19_19-18-08_fghmy9.jpg'" alt="Memory 5" />
+                  <img src="5.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779193924/photo_2026-05-19_19-31-44_gxfbkt.jpg'" alt="Memory 5" />
                 </div>
                 <div class="polaroid-back handwriting text-base min-[380px]:text-lg sm:text-xl md:text-2xl text-cyan-700">
                   <p>Every picture of you is a masterpiece! 📸</p>
@@ -751,7 +749,7 @@
             <div class="polaroid rotate-12" onclick="this.classList.toggle('flipped')">
               <div class="polaroid-inner">
                 <div class="polaroid-front">
-                  <img src="6.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779193114/photo_2026-05-19_19-18-13_vkdrao.jpg'" alt="Memory 6" />
+                  <img src="6.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779193926/photo_2026-05-19_19-31-46_revl1a.jpg'" alt="Memory 6" />
                 </div>
                 <div class="polaroid-back handwriting text-base min-[380px]:text-lg sm:text-xl md:text-2xl text-cyan-700">
                   <p>The most beautiful girl in the world. 💖</p>
@@ -768,38 +766,11 @@
           </div>
         </section>
 
-        <!-- Page 5: Been Together Counter (Now with Images!) -->
+        <!-- Page 5: Been Together Counter -->
         <section class="page">
-          <div class="text-center mb-2 min-[380px]:mb-4 w-full px-2">
-            <h2 class="handwriting text-xl min-[380px]:text-2xl sm:text-4xl md:text-5xl text-cyan-600 mb-1 min-[380px]:mb-2">Every second with you...</h2>
-          </div>
+          <h2 class="handwriting text-2xl min-[380px]:text-3xl sm:text-4xl md:text-5xl text-cyan-600 mb-4 min-[380px]:mb-6 sm:mb-8 text-center px-2">Every second with you...</h2>
           
-          <!-- New Polaroids added to the timer page -->
-          <div class="flex flex-row justify-center items-center gap-2 min-[380px]:gap-4 sm:gap-8 md:gap-16 mb-3 min-[380px]:mb-5 w-full scale-90 sm:scale-100">
-            <div class="polaroid -rotate-3" style="z-index: 2;" onclick="this.classList.toggle('flipped')">
-              <div class="polaroid-inner">
-                <div class="polaroid-front">
-                  <img src="7.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779633453/photo_2026-05-24_21-37-19_ptgcvd.jpg'" alt="Memory 7" />
-                </div>
-                <div class="polaroid-back handwriting text-base min-[380px]:text-lg sm:text-xl md:text-2xl text-cyan-700">
-                  <p>Time flies by! ⏳</p>
-                </div>
-              </div>
-            </div>
-            <div class="polaroid rotate-3" style="z-index: 1;" onclick="this.classList.toggle('flipped')">
-              <div class="polaroid-inner">
-                <div class="polaroid-front">
-                  <img src="8.jpg" onerror="this.src='https://res.cloudinary.com/dvljcimlz/image/upload/v1779193126/photo_2026-05-19_19-18-06_xolokj.jpg'" alt="Memory 8" />
-                </div>
-                <div class="polaroid-back handwriting text-base min-[380px]:text-lg sm:text-xl md:text-2xl text-cyan-700">
-                  <p>Forever to go ✨</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- The Timer (tightened up spacing so it fits beautifully below the new pictures) -->
-          <div class="flex justify-center items-center gap-1 sm:gap-3 md:gap-6 mb-3 min-[380px]:mb-4 w-full px-1">
+          <div class="flex justify-center items-center gap-1 sm:gap-3 md:gap-6 mb-4 min-[380px]:mb-6 sm:mb-10 w-full px-1">
             <div class="timer-box">
                 <span id="t-days" class="text-lg min-[380px]:text-xl sm:text-2xl md:text-4xl font-bold text-cyan-600">0</span>
                 <span class="text-[8px] min-[380px]:text-[10px] sm:text-xs md:text-sm text-cyan-500 font-medium uppercase tracking-wider">Days</span>
@@ -821,7 +792,7 @@
             </div>
           </div>
 
-          <p class="handwriting text-lg min-[380px]:text-xl sm:text-3xl md:text-4xl text-cyan-500 text-center mb-4 min-[380px]:mb-6">...is a dream come true ✨</p>
+          <p class="handwriting text-xl min-[380px]:text-2xl sm:text-3xl md:text-4xl text-cyan-500 text-center mb-6 min-[380px]:mb-8">...is a dream come true ✨</p>
 
           <div class="flex gap-3 min-[380px]:gap-4 sm:gap-6 mt-auto pb-2 sm:pb-4">
             <button onclick="prev()" class="nav-btn w-10 h-10 min-[380px]:w-12 min-[380px]:h-12 sm:w-14 sm:h-14 rounded-full flex justify-center items-center text-lg min-[380px]:text-xl sm:text-2xl shadow-sm">←</button>
@@ -867,9 +838,10 @@
                 Happy Birthday!
               </h1>
               <p class="text-[10px] min-[380px]:text-xs sm:text-sm md:text-base text-gray-700 leading-relaxed mb-4 min-[380px]:mb-6 sm:mb-8">
-                Wishing you a day filled with happiness, love, and all your favorite things. Also include me. 💖
+                Wishing you a day filled with happiness, love, and all your favorite things. You deserve the absolute best today and always! 💖
               </p>
               <div class="flex flex-row justify-center gap-2 sm:gap-4">
+                <!-- Swapped this to call the new triggerCelebration function -->
                 <button onclick="triggerCelebration()" class="nav-btn px-3 min-[380px]:px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs min-[380px]:text-sm sm:text-base font-medium shadow-sm">
                   Confetti 🎉
                 </button>
